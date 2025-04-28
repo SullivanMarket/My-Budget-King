@@ -54,6 +54,8 @@ Starting with this version, a custom SwiftUI-based splash screen is used instead
 
 ---
 
+## Change Log
+
 ### [v1.0.0] - 2025-04-28
 
 **Initial Creation:**
