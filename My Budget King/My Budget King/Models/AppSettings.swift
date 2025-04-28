@@ -1,0 +1,58 @@
+//
+//  AppSettings.swift
+//  My Budget King
+//
+//  Created by Sean Sullivan
+//
+
+import SwiftUI
+
+class AppSettings: ObservableObject {
+    static let shared = AppSettings()
+
+    @AppStorage("appearance") var appearanceRawValue: String = "system" {
+        didSet { objectWillChange.send() }
+    }
+
+    @AppStorage("headerColor") var headerColorData: Data = AppSettings.defaultColorData(NSColor.systemBlue)
+    @AppStorage("sectionBoxColor") var sectionBoxColorData: Data = AppSettings.defaultColorData(NSColor(calibratedRed: 0.9, green: 0.95, blue: 1.0, alpha: 1.0))
+    @AppStorage("fieldRowColor") var fieldRowColorData: Data = AppSettings.defaultColorData(NSColor(calibratedWhite: 0.95, alpha: 1.0))
+
+    private init() {}
+
+    var headerColor: Color { color(from: headerColorData) }
+    var sectionBoxColor: Color { color(from: sectionBoxColorData) }
+    var fieldRowColor: Color { color(from: fieldRowColorData) }
+
+    var colorScheme: ColorScheme? {
+        switch appearanceRawValue {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
+    private func color(from data: Data) -> Color {
+        if let nsColor = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? NSColor {
+            return Color(nsColor)
+        } else {
+            return Color.primary
+        }
+    }
+
+    private static func defaultColorData(_ color: NSColor) -> Data {
+        try! NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false)
+    }
+
+    func updateHeaderColor(to newColor: NSColor) {
+        headerColorData = AppSettings.defaultColorData(newColor)
+    }
+
+    func updateSectionBoxColor(to newColor: NSColor) {
+        sectionBoxColorData = AppSettings.defaultColorData(newColor)
+    }
+
+    func updateFieldRowColor(to newColor: NSColor) {
+        fieldRowColorData = AppSettings.defaultColorData(newColor)
+    }
+}

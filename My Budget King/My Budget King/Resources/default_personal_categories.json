@@ -1,0 +1,546 @@
+[
+  {
+    "id": "68a736eb-5ce6-455f-bb50-85916964aaa4",
+    "name": "Income",
+    "items": [
+      {
+        "id": "0cc9c1cc-2b20-4e8f-89bf-8921e4f0b3c5",
+        "name": "Paycheck",
+        "amount": 0.0
+      },
+      {
+        "id": "f7d97053-f153-4d03-8f48-d78cacf11c27",
+        "name": "Side Hustle",
+        "amount": 0.0
+      },
+      {
+        "id": "d061d710-b2dc-4512-92bf-da177ea35238",
+        "name": "Rental Income",
+        "amount": 0.0
+      },
+      {
+        "id": "bb580f9f-0402-4fea-ad6a-6b0bcbe92726",
+        "name": "Dividends",
+        "amount": 0.0
+      },
+      {
+        "id": "e3da5826-f698-4015-90a3-275aea85624b",
+        "name": "Child Support",
+        "amount": 0.0
+      },
+      {
+        "id": "58e07d9a-b7a4-4515-9e48-a531fe0a8dbc",
+        "name": "Social Security",
+        "amount": 0.0
+      },
+      {
+        "id": "176bbbc6-383b-41e2-8a21-bda98eddb586",
+        "name": "Pension",
+        "amount": 0.0
+      },
+      {
+        "id": "3136a78d-7eeb-4c34-8f01-b2439eaa7ec2",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "8ee8e6a0-f4ff-4a91-927e-691ef4a4ecfc",
+    "name": "Housing",
+    "items": [
+      {
+        "id": "f29efd91-c7c0-45d9-95da-07de897e615d",
+        "name": "Mortgage/Rent",
+        "amount": 0.0
+      },
+      {
+        "id": "8f71b166-f5c9-4d40-b837-86c18b904d44",
+        "name": "Second Mortgage/Rent",
+        "amount": 0.0
+      },
+      {
+        "id": "9a7d1010-e46f-4dbb-8c4c-2f5d78bda7cb",
+        "name": "Common Charges",
+        "amount": 0.0
+      },
+      {
+        "id": "cbf15339-8a7a-41b0-8092-9dfc4e6cd7a8",
+        "name": "Insurance (Covered Annual)",
+        "amount": 0.0
+      },
+      {
+        "id": "4ece2b04-7797-4f3a-b868-15e16719b15d",
+        "name": "Cell Phone",
+        "amount": 0.0
+      },
+      {
+        "id": "95ddd37d-bd8b-4f7d-918b-29d973403bd1",
+        "name": "Phone",
+        "amount": 0.0
+      },
+      {
+        "id": "702c0916-97ff-41d2-b39e-bc355db75553",
+        "name": "Electricity",
+        "amount": 0.0
+      },
+      {
+        "id": "67f014c4-3b07-44fb-a565-81199781b6c8",
+        "name": "Gas",
+        "amount": 0.0
+      },
+      {
+        "id": "0972cc2d-40cb-4146-b1aa-0d64bccac6a5",
+        "name": "Water/Sewer",
+        "amount": 0.0
+      },
+      {
+        "id": "9970f418-faac-4656-8c70-2ea893af6361",
+        "name": "Cable",
+        "amount": 0.0
+      },
+      {
+        "id": "54ac3207-f282-4212-b137-22425c20d477",
+        "name": "Waste Removal",
+        "amount": 0.0
+      },
+      {
+        "id": "a2067540-7ecb-46fe-9661-eab87098a67a",
+        "name": "Maintenance/Repairs",
+        "amount": 0.0
+      },
+      {
+        "id": "3e490792-4b45-4eea-8f78-1db30f6b475f",
+        "name": "Supplies",
+        "amount": 0.0
+      },
+      {
+        "id": "61c48ee0-cc89-4ae4-93c9-37d686a84cac",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "ddfe141a-633d-4bf7-be27-d1690a4da6c2",
+    "name": "Transportation",
+    "items": [
+      {
+        "id": "f2d6836e-a774-4352-8a04-43720e631487",
+        "name": "Vehicle 1 Payment",
+        "amount": 0.0
+      },
+      {
+        "id": "f5f395ff-bf1e-489b-9ff4-776943b92d6b",
+        "name": "Vehicle 2 Payment",
+        "amount": 0.0
+      },
+      {
+        "id": "04913f42-f6f7-4ed9-aafb-1e851651be3f",
+        "name": "Bus/Taxi Fare",
+        "amount": 0.0
+      },
+      {
+        "id": "6f3ed327-2298-4dfd-b0ba-cd4657de2a1d",
+        "name": "Insurance (Covered Bi-Annual)",
+        "amount": 0.0
+      },
+      {
+        "id": "ec2efb41-47b6-45a0-b06a-c3c822ad8a95",
+        "name": "Licensing (Covered Annual)",
+        "amount": 0.0
+      },
+      {
+        "id": "f0350023-c9ac-412c-a97e-32317a3337cd",
+        "name": "Fuel",
+        "amount": 0.0
+      },
+      {
+        "id": "6da57257-b2fa-4321-9eae-745dea798a22",
+        "name": "Maintenance",
+        "amount": 0.0
+      },
+      {
+        "id": "64106234-c990-4cd3-a4da-f4362c405256",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "2af5c5df-b202-42dc-9571-e70d0ff5c166",
+    "name": "Insurance",
+    "items": [
+      {
+        "id": "8d9341fa-95ec-43e3-a339-248b69d6a996",
+        "name": "Health",
+        "amount": 0.0
+      },
+      {
+        "id": "58d612fe-c244-48f1-a593-40ed1ded75e2",
+        "name": "Dental",
+        "amount": 0.0
+      },
+      {
+        "id": "75f30e8b-57e3-49bc-81db-1ba49cf8726f",
+        "name": "Life",
+        "amount": 0.0
+      },
+      {
+        "id": "c43a523b-ef42-46a1-b028-546d85da4f74",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "e1b48801-592e-4fcc-b83e-6fafb1ca647d",
+    "name": "Food",
+    "items": [
+      {
+        "id": "69d15b92-bf6f-4f5b-b631-d575143e6a76",
+        "name": "Groceries",
+        "amount": 0.0
+      },
+      {
+        "id": "3f9be7f8-47bb-4a1c-855b-a635d9760d4d",
+        "name": "Dining Out",
+        "amount": 0.0
+      },
+      {
+        "id": "db0c4d16-fadc-4b01-866b-929a805487e4",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "a4f9350b-f665-4d73-afab-c699bba51055",
+    "name": "Children",
+    "items": [
+      {
+        "id": "b80244fc-4ce3-4f0b-8390-c39844bccdcc",
+        "name": "Medical",
+        "amount": 0.0
+      },
+      {
+        "id": "70869edd-ee48-4372-bee8-38aaef53f4ff",
+        "name": "Clothing",
+        "amount": 0.0
+      },
+      {
+        "id": "d6c0041f-eb12-431c-aa1a-953781a04936",
+        "name": "School Tuition",
+        "amount": 0.0
+      },
+      {
+        "id": "39264b81-2cab-42de-8b26-fd4b46e2af65",
+        "name": "School Supplies",
+        "amount": 0.0
+      },
+      {
+        "id": "a48c6cbe-5831-4118-9a02-c5a8ea95ea71",
+        "name": "Organization Dues/Fees",
+        "amount": 0.0
+      },
+      {
+        "id": "ca642b8e-6aed-4ae4-832f-d7f05d5d7d00",
+        "name": "Lunch Money",
+        "amount": 0.0
+      },
+      {
+        "id": "0944384f-4b9f-4640-8bd6-12354ff57bbd",
+        "name": "Child Care",
+        "amount": 0.0
+      },
+      {
+        "id": "ad0c1dcb-7199-4d49-b33a-ab711d434a10",
+        "name": "Toys/Games",
+        "amount": 0.0
+      },
+      {
+        "id": "abdf7530-d989-4800-8519-1297a66bb195",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "225125e5-211e-4b0b-b239-52a4dbe1a077",
+    "name": "Legal",
+    "items": [
+      {
+        "id": "2d163915-a7b2-459e-929b-be427853f2f0",
+        "name": "Attorney",
+        "amount": 0.0
+      },
+      {
+        "id": "4d9c8605-1725-4997-b3d9-b8c34066e43d",
+        "name": "Alimony",
+        "amount": 0.0
+      },
+      {
+        "id": "20052dbc-5a84-43b5-9c8e-558761031813",
+        "name": "Payments",
+        "amount": 0.0
+      },
+      {
+        "id": "db70dedf-dd10-4d8f-9c03-e0b335de01ae",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "0db689b1-d00d-45ec-b855-5a837fe6752a",
+    "name": "Savings/Investments",
+    "items": [
+      {
+        "id": "f354ea97-d16b-4482-b61a-1db86ec21f19",
+        "name": "Retirement Account",
+        "amount": 0.0
+      },
+      {
+        "id": "d92d8e8a-7d71-43bb-ab6f-88bf93b768af",
+        "name": "Investment Account",
+        "amount": 0.0
+      },
+      {
+        "id": "420395f7-3a95-485d-81da-2320bca4893a",
+        "name": "Emergency Fund",
+        "amount": 0.0
+      },
+      {
+        "id": "e31021ec-3599-4220-93e4-c674148af674",
+        "name": "Emergency Condo Fund",
+        "amount": 0.0
+      },
+      {
+        "id": "5240130d-c737-48b3-91df-58894f13e8b7",
+        "name": "College",
+        "amount": 0.0
+      },
+      {
+        "id": "56eed231-8d0d-4107-ab56-9fd5368fd9f7",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "ef016bdb-a1a8-47f6-822e-0935226fe965",
+    "name": "Loans",
+    "items": [
+      {
+        "id": "f12e1798-23ad-4b58-b70b-9f95b7cd5175",
+        "name": "Personal",
+        "amount": 0.0
+      },
+      {
+        "id": "d538ce6c-ef90-44ce-a02c-dfb3da6a7f5c",
+        "name": "Student",
+        "amount": 0.0
+      },
+      {
+        "id": "8d019253-b4cb-4867-bb76-60dd4518e1eb",
+        "name": "Amazon Chase Visa",
+        "amount": 0.0
+      },
+      {
+        "id": "230a7611-396f-40b9-b588-aefbc5b38587",
+        "name": "Chase Visa",
+        "amount": 0.0
+      },
+      {
+        "id": "bfcfca99-7f0e-4bdf-8860-df4001c3ad04",
+        "name": "Medical",
+        "amount": 0.0
+      },
+      {
+        "id": "f3b15aa7-b34f-4d2d-8e7b-d0dba6f17eee",
+        "name": "Annual Bills",
+        "amount": 0.0
+      },
+      {
+        "id": "27443bd2-0588-4de1-9ec9-6c20657e3cc3",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "3a9203f8-d375-4c51-aab6-db12cf6d6dde",
+    "name": "Entertainment",
+    "items": [
+      {
+        "id": "4652a1ae-1cb4-4aeb-b7d1-bf35d08c2acd",
+        "name": "Video/DVD",
+        "amount": 0.0
+      },
+      {
+        "id": "a625f00d-47e2-4624-8010-9a08e9f73e3a",
+        "name": "CDs",
+        "amount": 0.0
+      },
+      {
+        "id": "08aa2c77-ae08-495e-b467-84e5547fe8fe",
+        "name": "Movies",
+        "amount": 0.0
+      },
+      {
+        "id": "d1b4df05-25bb-45bd-b7b3-4dd5ceaae537",
+        "name": "Concerts",
+        "amount": 0.0
+      },
+      {
+        "id": "7cfcfd86-d8eb-49ec-9dc5-3db113d0f746",
+        "name": "Sporting Events",
+        "amount": 0.0
+      },
+      {
+        "id": "9d482120-a647-43da-95a0-ab75a0d6cf9f",
+        "name": "Live Theater",
+        "amount": 0.0
+      },
+      {
+        "id": "de7e1d1c-f91e-4140-a4ee-771c9ef6b8f3",
+        "name": "Violin/Guitar Lessons",
+        "amount": 0.0
+      },
+      {
+        "id": "151f04c0-217f-458f-bd27-8a8b7a173378",
+        "name": "Cello Lessons",
+        "amount": 0.0
+      },
+      {
+        "id": "4c9d5baf-2359-4c30-b837-f58cf1ebbca6",
+        "name": "Slow Jams Dues",
+        "amount": 0.0
+      },
+      {
+        "id": "e124b132-df76-45a6-a45f-1f0b25803e9a",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "d28356b9-a019-4f67-94be-01bd1a57a3b6",
+    "name": "Taxes",
+    "items": [
+      {
+        "id": "e079ce61-4bb8-4792-b3b4-b42e6368e23c",
+        "name": "Federal",
+        "amount": 0.0
+      },
+      {
+        "id": "75b0f681-3fe8-4ee9-a2ce-0ef4e81a710e",
+        "name": "State",
+        "amount": 0.0
+      },
+      {
+        "id": "d36206b3-08c4-479d-9706-b6bb6aec5988",
+        "name": "Local",
+        "amount": 0.0
+      },
+      {
+        "id": "4e1c35af-9a7c-4e6f-bc93-59488955f2f6",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "59423da2-1b21-4123-90e5-50bba5fd9d04",
+    "name": "Personal Care",
+    "items": [
+      {
+        "id": "e25d1435-186a-47ca-9c85-bab0bd61a4bb",
+        "name": "Medical",
+        "amount": 0.0
+      },
+      {
+        "id": "a5a8ed09-da6b-4127-b2bd-832d8f091569",
+        "name": "Hair/Nails",
+        "amount": 0.0
+      },
+      {
+        "id": "d85843c6-e3a8-424a-9c6f-d8bab90d2de1",
+        "name": "Clothing",
+        "amount": 0.0
+      },
+      {
+        "id": "f148dac1-4cb0-4ea5-bebe-f6726fdbf7b4",
+        "name": "Dry Cleaning",
+        "amount": 0.0
+      },
+      {
+        "id": "63248db7-bd36-4af6-ac65-216448beadd3",
+        "name": "Health Club",
+        "amount": 0.0
+      },
+      {
+        "id": "a9ac96d0-df20-46d7-973e-2a17a4d69eae",
+        "name": "Organization Dues/Fees",
+        "amount": 0.0
+      },
+      {
+        "id": "b4b146d7-a140-492e-b01e-b1ea4fa825fa",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "d9bde66d-2edc-41ac-9fa4-af6b7436a47a",
+    "name": "Pets",
+    "items": [
+      {
+        "id": "cf344f71-bec0-49ab-964c-86623b2e03df",
+        "name": "Food",
+        "amount": 0.0
+      },
+      {
+        "id": "c7022090-75e9-4666-9324-6a118f08c73e",
+        "name": "Medical",
+        "amount": 0.0
+      },
+      {
+        "id": "39c75fcf-5589-4654-8cfd-4329a2ff23eb",
+        "name": "Grooming",
+        "amount": 0.0
+      },
+      {
+        "id": "dcabee00-c143-4f94-a159-2db77d55eb50",
+        "name": "Toys",
+        "amount": 0.0
+      },
+      {
+        "id": "636e2cbf-7c4e-48ca-bba9-1bd02d99c571",
+        "name": "Other",
+        "amount": 0.0
+      }
+    ]
+  },
+  {
+    "id": "47e0d90b-c2f7-4368-b5e3-a62f9aa53b37",
+    "name": "Gifts and Donations",
+    "items": [
+      {
+        "id": "43b25e87-0769-4871-bf23-7892e1a2b625",
+        "name": "Parish of the Blessed Sacrament",
+        "amount": 0.0
+      },
+      {
+        "id": "3a92bbad-30a5-4bb2-9a97-494636d7849c",
+        "name": "St. Jude",
+        "amount": 0.0
+      },
+      {
+        "id": "63f9e10d-0f94-4599-a300-eb246f84e169",
+        "name": "Cornerstone Food Pantry",
+        "amount": 0.0
+      }
+    ]
+  }
+]
