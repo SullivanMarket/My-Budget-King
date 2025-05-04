@@ -106,7 +106,13 @@ struct BudgetSetupView: View {
 
                             ForEach(incomeCategory.items.indices, id: \.self) { i in
                                 HStack {
-                                    Text(incomeCategory.items[i].name)
+                                    if isEditing {
+                                        TextField("Name", text: $categories[categories.firstIndex(where: { $0.id == incomeCategory.id })!].items[i].name)
+                                            .textFieldStyle(.roundedBorder)
+                                            .frame(maxWidth: .infinity)
+                                    } else {
+                                        Text(incomeCategory.items[i].name)
+                                    }
                                     Spacer()
                                     if isEditing {
                                         TextField("Amount", value: $categories[categories.firstIndex(where: { $0.id == incomeCategory.id })!].items[i].amount, format: .number)
@@ -203,7 +209,13 @@ struct ExpenseCategorySection: View {
 
             ForEach(category.items.indices, id: \.self) { i in
                 HStack {
-                    Text(category.items[i].name)
+                    if isEditing {
+                        TextField("Name", text: $category.items[i].name)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text(category.items[i].name)
+                    }
                     Spacer()
                     if isEditing {
                         TextField("Amount", value: $category.items[i].amount, format: .number)

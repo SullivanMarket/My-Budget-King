@@ -8,40 +8,46 @@
 import SwiftUI
 
 struct ReportsPrintableView: View {
-    let actuals: [MonthlyActualEntry]
+    let actuals: [MonthlyActualFlatEntry]
     let selectedType: AppBudgetType
     let selectedYear: Int
 
     var body: some View {
+        content
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("\(selectedType.rawValue.capitalized) Budget Report – \(String(selectedYear))")
                 .font(.title)
                 .bold()
 
-            if let income = actuals.first(where: { $0.categoryName.lowercased() == "income" }) {
+            let incomeEntries = actuals.filter { $0.categoryName.lowercased() == "income" }
+            if !incomeEntries.isEmpty {
+                // Move label above the colored box
                 Text("Income")
-                    .font(.title2) // H2-like size (larger than headline)
-                        .bold()        // Make it bold
-                        .foregroundColor(.primary)
-                        .padding(.bottom, 4)
-                    .padding(.top, 8) // 🔥 Adds buffer above "Income"
+                    .font(.title2)
+                    .bold()
+                    .foregroundColor(.primary)
+                    .padding(.leading, 4)
+                    .padding(.bottom, 4)
 
                 VStack(spacing: 4) {
-                    ForEach(income.items) { item in
+                    ForEach(incomeEntries) { item in
                         HStack {
                             Text(item.name)
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                            Text(String(format: "%.2f", item.budgeted))
+                            Text(String(format: "$%.2f", item.budgetedAmount))
                                 .frame(width: 80, alignment: .trailing)
 
-                            Text(String(format: "%.2f", item.actual))
+                            Text(String(format: "$%.2f", item.actualAmount))
                                 .frame(width: 80, alignment: .trailing)
 
                             Group {
-                                if item.actual > item.budgeted {
+                                if item.actualAmount > item.budgetedAmount {
                                     Image(systemName: "arrow.up").foregroundColor(.green)
-                                } else if item.actual < item.budgeted {
+                                } else if item.actualAmount < item.budgetedAmount {
                                     Image(systemName: "arrow.down").foregroundColor(.red)
                                 } else {
                                     Image(systemName: "equal").foregroundColor(.green)
@@ -53,44 +59,51 @@ struct ReportsPrintableView: View {
                         .cornerRadius(6)
                     }
                 }
+                .padding()
+                .background(AppSettings.shared.sectionBoxColor) // Wrap entries only
+                .cornerRadius(12)
             }
 
-            let expenseEntries = actuals.filter { $0.categoryName.lowercased() != "income" }.sorted {
-                let order = ["Housing", "Transportation", "Insurance", "Food", "Children", "Legal", "Savings/Investments", "Loans", "Entertainment", "Taxes", "Personal Care", "Pets", "Gifts and Donations"]
-                return order.firstIndex(of: $0.categoryName) ?? 0 < order.firstIndex(of: $1.categoryName) ?? 0
+            let expenseEntries = actuals.filter { $0.categoryName.lowercased() != "income" }
+            let groupedExpenses = Dictionary(grouping: expenseEntries, by: { $0.categoryName })
+            let order = ["Housing", "Transportation", "Insurance", "Food", "Children", "Legal", "Savings/Investments", "Loans", "Entertainment", "Taxes", "Personal Care", "Pets", "Gifts and Donations"]
+            let sortedCategories = groupedExpenses.keys.sorted {
+                (order.firstIndex(of: $0) ?? Int.max) < (order.firstIndex(of: $1) ?? Int.max)
             }
 
-            if !actuals.isEmpty {
+            if !sortedCategories.isEmpty {
                 Text("Expenses")
-                    .font(.title2) // H2-like size (larger than headline)
-                        .bold()        // Make it bold
-                        .foregroundColor(.primary)
-                        .padding(.bottom, 4)
+                    .font(.title2)
+                    .bold()
+                    .foregroundColor(.primary)
+                    .padding(.bottom, 4)
                     .padding(.top)
 
-                ForEach(actuals) { entry in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(entry.categoryName)
-                            .font(.subheadline)
-                            .bold()
+                ForEach(sortedCategories, id: \.self) { category in
+                    if let items = groupedExpenses[category] {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(category)
+                                .font(.subheadline)
+                                .bold()
 
-                        ForEach(entry.items) { item in
-                            HStack {
-                                Text(item.name)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            ForEach(items) { item in
+                                HStack {
+                                    Text(item.name)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                                Text(String(format: "%.2f", item.budgeted))
-                                    .frame(width: 80, alignment: .trailing)
+                                    Text(String(format: "$%.2f", item.budgetedAmount))
+                                        .frame(width: 80, alignment: .trailing)
 
-                                Text(String(format: "%.2f", item.actual))
-                                    .frame(width: 80, alignment: .trailing)
+                                    Text(String(format: "$%.2f", item.actualAmount))
+                                        .frame(width: 80, alignment: .trailing)
+                                }
+                                .padding(4)
+                                .background(Color.gray.opacity(0.08))
+                                .cornerRadius(6)
                             }
-                            .padding(4)
-                            .background(Color.gray.opacity(0.08))
-                            .cornerRadius(6)
                         }
+                        .padding(.vertical, 6)
                     }
-                    .padding(.vertical, 6)
                 }
             }
 

@@ -9,31 +9,28 @@ import SwiftUI
 
 @main
 struct MyBudgetKingApp: App {
-    @State private var showingSplash = true
-    @State private var fadeOut = false
+    @State private var showSplash = true
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                MainAppView()
-                    .opacity(showingSplash ? 0 : 1)
-
-                if showingSplash {
+            Group {
+                if showSplash {
                     SplashScreenView()
-                        .opacity(fadeOut ? 0 : 1)
-                        .onAppear {
-                            // Start timer
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                                withAnimation(.easeOut(duration: 0.5)) {
-                                    fadeOut = true
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    showingSplash = false
-                                }
-                            }
-                        }
+                        .transition(.opacity)
+                } else {
+                    MainAppView()
+                        .transition(.opacity)
+                        .frame(minWidth: 1200, minHeight: 700) // Adjust these values as needed
+                }
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        showSplash = false
+                    }
                 }
             }
         }
+        .windowResizability(.contentSize) // Prevent shrinking smaller than content
     }
 }

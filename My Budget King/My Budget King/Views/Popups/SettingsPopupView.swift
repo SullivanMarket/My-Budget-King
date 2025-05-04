@@ -23,7 +23,8 @@ struct SettingsPopupView: View {
                 .background(settings.headerColor) // header color from settings!
 
             VStack(spacing: 24) {
-                // Appearance Section
+                // Appearance Section (Commented out)
+                /*
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Appearance")
                         .font(.headline)
@@ -36,6 +37,7 @@ struct SettingsPopupView: View {
                     .pickerStyle(SegmentedPickerStyle())
                     .frame(width: 300)
                 }
+                */
 
                 // Color Pickers Section
                 VStack(alignment: .leading, spacing: 16) {

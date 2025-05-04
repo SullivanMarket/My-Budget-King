@@ -6,239 +6,284 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
+import AppKit
+
+struct FullPageRTFExporter {
+    static func generateRTF(from entries: [ActualEntry], selectedMonth: Int, selectedYear: Int) -> Data? {
+        let attributed = NSMutableAttributedString()
+
+        // Title + Subtitle
+        let title = "Monthly Budget Report\n"
+        let subtitle = String(format: "Month: %02d    Year: %04d\n\n", selectedMonth, selectedYear)
+        attributed.append(NSAttributedString(string: title, attributes: [.font: NSFont.boldSystemFont(ofSize: 18)]))
+        attributed.append(NSAttributedString(string: subtitle, attributes: [.font: NSFont.systemFont(ofSize: 14)]))
+
+        // Use monospaced font for alignment
+        let monoFont = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+
+        // Income Section
+        let incomeEntries = entries.filter { $0.categoryName == "Income" }
+        if !incomeEntries.isEmpty {
+            attributed.append(NSAttributedString(string: "Income\n", attributes: [.font: NSFont.boldSystemFont(ofSize: 16)]))
+            for entry in incomeEntries {
+                let name = entry.name.padding(toLength: 28, withPad: " ", startingAt: 0)
+                let budgeted = String(format: "Budgeted: %.2f", entry.budgetedAmount).padding(toLength: 20, withPad: " ", startingAt: 0)
+                let actual = String(format: "Actual: %.2f", entry.actualAmount).padding(toLength: 20, withPad: " ", startingAt: 0)
+                let line = "\(name)\t\(budgeted)\t\(actual)\n"
+                attributed.append(NSAttributedString(string: line, attributes: [.font: monoFont]))
+            }
+            attributed.append(NSAttributedString(string: "\n"))
+        }
+
+        // Expense Section
+        let expenseEntries = entries.filter { $0.categoryName != "Income" }
+        let grouped = Dictionary(grouping: expenseEntries, by: { $0.categoryName })
+        let orderedCategories = [
+            "Housing", "Transportation", "Insurance", "Food", "Children",
+            "Legal", "Savings/Investments", "Loans", "Entertainment",
+            "Taxes", "Personal Care", "Pets", "Gifts and Donations"
+        ]
+
+        attributed.append(NSAttributedString(string: "Expenses\n", attributes: [.font: NSFont.boldSystemFont(ofSize: 16)]))
+
+        for category in orderedCategories {
+            if let items = grouped[category] {
+                attributed.append(NSAttributedString(string: "\(category)\n", attributes: [.font: NSFont.boldSystemFont(ofSize: 14)]))
+                for entry in items {
+                    let name = entry.name.padding(toLength: 28, withPad: " ", startingAt: 0)
+                    let budgeted = String(format: "Budgeted: %.2f", entry.budgetedAmount).padding(toLength: 20, withPad: " ", startingAt: 0)
+                    let actual = String(format: "Actual: %.2f", entry.actualAmount).padding(toLength: 20, withPad: " ", startingAt: 0)
+                    let line = "\(name)\t\(budgeted)\t\(actual)\n"
+                    attributed.append(NSAttributedString(string: line, attributes: [.font: monoFont]))
+                }
+                attributed.append(NSAttributedString(string: "\n"))
+            }
+        }
+
+        // Final conversion
+        let rtfData = try? attributed.data(from: NSRange(location: 0, length: attributed.length), documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf])
+        return rtfData
+    }
+}
+
+
 
 struct ReportsView: View {
-    @State private var actuals: [ReportMonthlyActualEntry] = []
-    @State private var groupedExpenses: [String: [ReportMonthlyActualEntry]] = [:]
+    @State private var entries: [ActualEntry] = []
     @State private var selectedType: AppBudgetType = .personal
-    @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
+    @State private var selectedMonth = Calendar.current.component(.month, from: Date())
     @ObservedObject private var settings = AppSettings.shared
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var bodyTextColor: Color {
+        colorScheme == .dark ? .white : .black
+    }
 
     private let orderedExpenseCategories = [
-        "Housing", "Transportation", "Insurance", "Food", "Children", "Legal",
-        "Savings/Investments", "Loans", "Entertainment", "Taxes", "Personal Care",
-        "Pets", "Gifts and Donations"
+        "Housing", "Transportation", "Insurance", "Food", "Children",
+        "Legal", "Savings/Investments", "Loans", "Entertainment",
+        "Taxes", "Personal Care", "Pets", "Gifts and Donations"
     ]
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Reports")
-                        .font(.title)
-                        .bold()
-                        .foregroundColor(.primary)
-
-                    Text("Viewing actual results for \(selectedType.rawValue.capitalized) budget in \(String(selectedYear))")
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
-                }
-                Spacer()
-
-                Button(action: {
-                    generateRtfPreview()
-                }) {
-                    Label("Export RTF", systemImage: "doc.richtext")
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color.white)
-                        .cornerRadius(10)
-                }
-                .buttonStyle(.plain)
-                .foregroundColor(.primary)
-
-                Text("Budget Type")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-                    .padding(.leading, 8)
-
-                Picker("", selection: $selectedType) {
-                    Text("Personal").tag(AppBudgetType.personal)
-                    Text("Family").tag(AppBudgetType.family)
-                }
-                .pickerStyle(.segmented)
-                .frame(width: 160)
-            }
-            .padding()
-            .background(settings.headerColor)
-                
-                // START SCROLLVIEW
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        
-                        // ✅ Correct Income Section (ONLY ONCE)
-                        if !actuals.filter({ $0.category.lowercased() == "income" }).isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Income")
-                                    .font(.title2)
-                                    .bold()
-                                    .foregroundColor(.primary)
-                                    .padding(.bottom, 4)
-
-                                VStack(spacing: 8) {
-                                    ForEach(actuals.filter { $0.category.lowercased() == "income" }, id: \.id) { entry in
-                                        ReportRow(entry: entry, isIncome: true)
-                                    }
-                                }
-                                .padding()
-                                .background(RoundedRectangle(cornerRadius: 12).fill(settings.sectionBoxColor))
-                            }
-                            .padding(.horizontal)
-                        }
-
-                    // Expenses Section
-                    Text("Expenses")
-                        .font(.title2) // H2-like size (larger than headline)
-                            .bold()        // Make it bold
-                            .foregroundColor(.primary)
-                            .padding(.bottom, 4)
-                        .padding(.vertical, 4)
-
-                    let leftColumnCategories = stride(from: 0, to: orderedExpenseCategories.count, by: 2).map { orderedExpenseCategories[$0] }
-                    let rightColumnCategories = stride(from: 1, to: orderedExpenseCategories.count, by: 2).map { orderedExpenseCategories[$0] }
-
-                    HStack(alignment: .top, spacing: 24) {
-                        // Left Column
-                        VStack(alignment: .leading, spacing: 16) {
-                            ForEach(leftColumnCategories, id: \.self) { category in
-                                if let entries = groupedExpenses[category], !entries.isEmpty {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text(category)
-                                            .font(.subheadline)
-                                            .bold()
-
-                                        ForEach(entries, id: \.id) { entry in
-                                            ReportRow(entry: entry, isIncome: false)
-                                        }
-                                    }
-                                    .padding()
-                                    .background(settings.sectionBoxColor)
-                                    .cornerRadius(10)
-                                }
-                            }
-                        }
-
-                        // Right Column
-                        VStack(alignment: .leading, spacing: 16) {
-                            ForEach(rightColumnCategories, id: \.self) { category in
-                                if let entries = groupedExpenses[category], !entries.isEmpty {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text(category)
-                                            .font(.subheadline)
-                                            .bold()
-
-                                        ForEach(entries, id: \.id) { entry in
-                                            ReportRow(entry: entry, isIncome: false)
-                                        }
-                                    }
-                                    .padding()
-                                    .background(settings.sectionBoxColor)
-                                    .cornerRadius(10)
-                                }
-                            }
-                        }
-                    }
+            header
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    incomeSection
+                    expenseSection
                 }
                 .padding()
-            }
-            .background(settings.sectionBoxColor)
-            .ifLet(settings.colorScheme) { view, scheme in
-                view.colorScheme(scheme)
+                .foregroundColor(bodyTextColor)
             }
         }
-        .onAppear(perform: loadActualDataForReports)
-    }
-
-    private func loadActualDataForReports() {
-        let (all, grouped) = BudgetDataManager.shared.loadGroupedActualsForReports(for: selectedYear, type: selectedType)
-        actuals = all
-        groupedExpenses = grouped
-    }
-
-    private func generateRtfPreview() {
-        print("Generating RTF...")
-
-        let rtfContent = DocxExporter.shared.createFormattedRtf(
-            actuals: actuals,
-            groupedExpenses: groupedExpenses,
-            selectedType: selectedType,
-            selectedYear: selectedYear
-        )
-
-        if let data = rtfContent.data(using: .utf8) {
-            saveDocxToFile(data: data)
-            print("✅ RTF saved successfully.")
-        } else {
-            print("❌ Failed to create RTF data.")
+        .background(settings.sectionBoxColor)
+        .onAppear {
+            print("📊 ReportsView is in \(colorScheme == .dark ? "Dark" : "Light") Mode")
+            loadReportEntries()
         }
     }
 
-    private func saveDocxToFile(data: Data) {
-        let panel = NSSavePanel()
-        panel.allowedContentTypes = [UTType.rtf]
-        panel.nameFieldStringValue = "BudgetReport.rtf"
-
-        if panel.runModal() == .OK, let url = panel.url {
-            do {
-                try data.write(to: url)
-                print("✅ File saved successfully: \(url)")
-            } catch {
-                print("❌ Failed to save file: \(error)")
-            }
-        }
-    }
-}
-
-// MARK: - ReportRow View
-
-struct ReportRow: View {
-    var entry: ReportMonthlyActualEntry
-    var isIncome: Bool
-    @ObservedObject private var settings = AppSettings.shared
-
-    var body: some View {
+    private var header: some View {
         HStack {
-            Text(entry.name)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading) {
+                Text("Reports").font(.title).bold()
+                Text("View budgeted vs actual income and expenses.")
+                    .font(.subheadline)
+            }
 
             Spacer()
 
-            Text(String(format: "$%.2f", entry.budgetedAmount))
-                .frame(width: 80, alignment: .trailing)
+            Picker("Month", selection: $selectedMonth) {
+                ForEach(1...12, id: \.self) {
+                    Text(Calendar.current.monthSymbols[$0 - 1]).tag($0)
+                }
+            }.frame(width: 120)
 
-            Spacer(minLength: 8)
+            Picker("", selection: $selectedType) {
+                Text("Personal").tag(AppBudgetType.personal)
+                Text("Family").tag(AppBudgetType.family)
+            }.pickerStyle(.segmented).frame(width: 160)
 
-            Text(String(format: "$%.2f", entry.actualAmount))
-                .frame(width: 80, alignment: .trailing)
+            Button(action: {
+                let selectedYear = Calendar.current.component(.year, from: Date())
+                if let rtfData = FullPageRTFExporter.generateRTF(from: entries, selectedMonth: selectedMonth, selectedYear: selectedYear) {
+                    let savePanel = NSSavePanel()
+                    savePanel.allowedContentTypes = [.rtf]
+                    savePanel.nameFieldStringValue = String(format: "%02d-%04d-report.rtf", selectedMonth, selectedYear)
 
-            Spacer(minLength: 8)
-
-            trendIcon(for: entry)
-                .frame(width: 20)
+                    if savePanel.runModal() == .OK, let url = savePanel.url {
+                        do {
+                            try rtfData.write(to: url)
+                            print("✅ RTF saved to \(url.path)")
+                        } catch {
+                            print("❌ Failed to save RTF: \(error)")
+                        }
+                    }
+                } else {
+                    print("❌ Failed to generate RTF")
+                }
+            }) {
+                Label("Export to RTF", systemImage: "doc.richtext")
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.white)
+                    .foregroundColor(.primary)
+                    .cornerRadius(10)
+            }
+            .buttonStyle(.plain)
         }
-        .padding(8)
-        .background(settings.fieldRowColor)
-        .cornerRadius(8)
+        .padding()
+        .background(settings.headerColor)
     }
 
-    private func trendIcon(for entry: ReportMonthlyActualEntry) -> some View {
-        let actual = entry.actualAmount
-        let budgeted = entry.budgetedAmount
+    private var incomeSection: some View {
+        let incomeEntries = entries.filter { $0.categoryName == "Income" }
+        return Group {
+            if !incomeEntries.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    // Label outside the background
+                    Text("Income")
+                        .font(.title2)
+                        .bold()
+                        .padding(.leading, 4)
 
-        if actual == budgeted {
-            return Image(systemName: "equal")
-                .foregroundColor(.green)
+                    // Only this section gets the colored background
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(incomeEntries) { entry in
+                            reportRow(for: entry)
+                        }
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 12).fill(settings.sectionBoxColor))
+                }
+            }
+        }
+    }
+
+    private var expenseSection: some View {
+        let expenses = entries.filter { $0.categoryName != "Income" }
+        let grouped = Dictionary(grouping: expenses, by: { $0.categoryName })
+        let sorted = orderedExpenseCategories.compactMap { grouped[$0] }
+
+        let flat = sorted.flatMap { $0 }
+        let mid = Int(ceil(Double(flat.count) / 2.0))
+        let left = Array(flat.prefix(mid))  // ✅ Convert slice to Array
+        let right = Array(flat.suffix(from: mid))  // ✅ Convert slice to Array
+
+        return VStack(alignment: .leading, spacing: 16) {
+            Text("Expenses")
+                .font(.title2)
                 .bold()
-        } else if isIncome {
-            return Image(systemName: actual > budgeted ? "arrow.up" : "arrow.down")
-                .foregroundColor(actual > budgeted ? .green : .red)
-                .bold()
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+                .foregroundColor(bodyTextColor)
+
+            HStack(alignment: .top, spacing: 32) {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(left.groupedByCategory(ordered: orderedExpenseCategories), id: \.0) { (category, entries) in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(category)
+                                .font(.headline)
+                                .padding(.leading, 4)
+
+                            ForEach(entries) { entry in
+                                reportRow(for: entry)
+                            }
+                        }
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 12).fill(settings.sectionBoxColor))
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(right.groupedByCategory(ordered: orderedExpenseCategories), id: \.0) { (category, entries) in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(category)
+                                .font(.headline)
+                                .padding(.leading, 4)
+
+                            ForEach(entries) { entry in
+                                reportRow(for: entry)
+                            }
+                        }
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 12).fill(settings.sectionBoxColor))
+                    }
+                }
+            }
+        }
+    }
+
+    private func reportRow(for entry: ActualEntry) -> some View {
+        HStack {
+            Text(entry.name)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(bodyTextColor)
+            Text(String(format: "%.2f", entry.budgetedAmount))
+                .frame(width: 60, alignment: .trailing)
+                .foregroundColor(.secondary)
+            Text(String(format: "%.2f", entry.actualAmount))
+                .frame(width: 60, alignment: .trailing)
+                .foregroundColor(.primary)
+        }
+        .padding(6)
+        .background(RoundedRectangle(cornerRadius: 8).fill(settings.fieldRowColor))
+    }
+
+    private func loadReportEntries() {
+        entries = BudgetDataManager.shared.loadActualEntries(
+            for: selectedMonth,
+            year: Calendar.current.component(.year, from: Date()),
+            type: selectedType
+        )
+    }
+
+private func exportRTF() {
+    let entriesToExport = entries
+    let selectedYear = String(Calendar.current.component(.year, from: Date()))
+    let selectedMonthStr = String(format: "%02d", selectedMonth)
+    let fileName = "\(selectedMonthStr)-\(selectedYear)-report.rtf"
+    if let outputURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first?.appendingPathComponent(fileName) {
+        if let rtfData = FullPageRTFExporter.generateRTF(from: entriesToExport, selectedMonth: selectedMonth, selectedYear: Int(selectedYear) ?? 2025) {
+            try? rtfData.write(to: outputURL)
+            print("✅ RTF exported to \(outputURL.path)")
         } else {
-            return Image(systemName: actual > budgeted ? "arrow.up" : "arrow.down")
-                .foregroundColor(actual > budgeted ? .red : .green)
-                .bold()
+            print("❌ Failed to generate RTF")
+        }
+    }
+}
+}
+
+// MARK: - Grouping Extension for ActualEntry
+private extension Array where Element == ActualEntry {
+    func groupedByCategory(ordered: [String]) -> [(String, [ActualEntry])] {
+        let grouped = Dictionary(grouping: self, by: { $0.categoryName })
+        return ordered.compactMap { key in
+            if let values = grouped[key] {
+                return (key, values)
+            }
+            return nil
         }
     }
 }

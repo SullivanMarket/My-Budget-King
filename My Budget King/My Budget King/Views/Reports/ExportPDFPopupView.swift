@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 import PDFKit
 
 struct ExportPDFPopupView: View {
-    let actuals: [MonthlyActualEntry]
+    let actuals: [MonthlyActualFlatEntry]
     let selectedType: AppBudgetType
     let selectedYear: Int
     let dismiss: () -> Void
@@ -66,7 +66,19 @@ struct ExportPDFPopupView: View {
     private func exportToPDF(to url: URL) {
         print("🖨️ Starting NSPrintOperation PDF export...")
 
-        let view = ReportsPrintableView(actuals: actuals, selectedType: selectedType, selectedYear: selectedYear)
+        let view = ReportsPrintableView(
+            actuals: actuals.map {
+                MonthlyActualFlatEntry(
+                    id: $0.id,
+                    name: $0.name,
+                    categoryName: $0.categoryName,
+                    budgetedAmount: $0.budgetedAmount,
+                    actualAmount: $0.actualAmount
+                )
+            },
+            selectedType: selectedType,
+            selectedYear: selectedYear
+        )
         let hostingView = NSHostingView(rootView: view)
         hostingView.frame = NSRect(x: 0, y: 0, width: 612, height: 792) // 8.5" x 11"
 

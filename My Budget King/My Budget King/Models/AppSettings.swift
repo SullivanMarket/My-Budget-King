@@ -10,7 +10,7 @@ import SwiftUI
 class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
-    @AppStorage("appearance") var appearanceRawValue: String = "system" {
+    @AppStorage("appearance") var appearanceRawValue: String = "light" {
         didSet { objectWillChange.send() }
     }
 
@@ -25,15 +25,12 @@ class AppSettings: ObservableObject {
     var fieldRowColor: Color { color(from: fieldRowColorData) }
 
     var colorScheme: ColorScheme? {
-        switch appearanceRawValue {
-        case "light": return .light
-        case "dark": return .dark
-        default: return nil
-        }
+        // Always return light mode now
+        return .light
     }
 
     private func color(from data: Data) -> Color {
-        if let nsColor = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? NSColor {
+        if let nsColor = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: data) {
             return Color(nsColor)
         } else {
             return Color.primary

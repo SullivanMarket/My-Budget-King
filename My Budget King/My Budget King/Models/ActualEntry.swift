@@ -8,9 +8,9 @@
 import Foundation
 
 struct ActualEntry: Identifiable, Codable {
-    var id = UUID()
+    var id: UUID
     var name: String
-    var category: String
+    var categoryName: String  // ✅ Add this
     var budgetedAmount: Double
     var actualAmount: Double
 }

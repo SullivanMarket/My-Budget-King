@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 struct ReportsPreviewWindow: View {
     @Binding var isPresented: Bool
-    let actuals: [MonthlyActualEntry]
+    let actuals: [MonthlyActualFlatEntry]
     let selectedType: AppBudgetType
     let selectedYear: Int
 
@@ -56,7 +56,19 @@ struct ReportsPreviewWindow: View {
     }
 
     private func generatePDF() {
-        let view = ReportsPrintableView(actuals: actuals, selectedType: selectedType, selectedYear: selectedYear)
+        let view = ReportsPrintableView(
+            actuals: actuals.map {
+                MonthlyActualFlatEntry(
+                    id: $0.id,
+                    name: $0.name,
+                    categoryName: $0.categoryName,
+                    budgetedAmount: $0.budgetedAmount,
+                    actualAmount: $0.actualAmount
+                )
+            },
+            selectedType: selectedType,
+            selectedYear: selectedYear
+        )
         let controller = NSHostingController(rootView: view)
         controller.view.frame = CGRect(x: 0, y: 0, width: 612, height: 792)
 

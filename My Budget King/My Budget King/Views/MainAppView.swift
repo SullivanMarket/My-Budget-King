@@ -7,10 +7,12 @@
 
 import SwiftUI
 
+// 🆕 Add this at the top before MainAppView
 enum AppPage: String, CaseIterable, Identifiable {
     case setup = "Budget Setup"
     case actuals = "Monthly Actuals"
     case reports = "Reports"
+    case comparison = "Monthly Comparison"
 
     var id: String { rawValue }
 
@@ -19,6 +21,7 @@ enum AppPage: String, CaseIterable, Identifiable {
         case .setup: return "pencil.and.list.clipboard"
         case .actuals: return "calendar.badge.clock"
         case .reports: return "chart.bar.xaxis"
+        case .comparison: return "chart.bar.doc.horizontal"
         }
     }
 }
@@ -26,6 +29,8 @@ enum AppPage: String, CaseIterable, Identifiable {
 struct MainAppView: View {
     @State private var selectedPage: AppPage? = .setup
     @State private var showingSettings = false
+    @ObservedObject private var settings = AppSettings.shared
+    @ObservedObject private var appState = AppState.shared // 🆕 Needed to mark app as ready
 
     var body: some View {
         NavigationSplitView {
@@ -34,13 +39,21 @@ struct MainAppView: View {
                     Button {
                         selectedPage = page
                     } label: {
-                        Label(page.rawValue, systemImage: page.icon)
-                            .font(.body)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .contentShape(Rectangle())
+                        HStack {
+                            Label(page.rawValue, systemImage: page.icon)
+                                .font(.body)
+                                .padding(.vertical, 10)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            selectedPage == page ? settings.headerColor.opacity(0.2) : Color.clear
+                        )
+                        .cornerRadius(8)
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .foregroundColor(selectedPage == page ? .primary : .secondary)
                     .tag(page)
                 }
 
@@ -57,7 +70,7 @@ struct MainAppView: View {
                             .frame(maxWidth: .infinity)
                         Spacer()
                     }
-                    .contentShape(Rectangle()) // <-- move this INSIDE here!
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 8)
@@ -72,6 +85,8 @@ struct MainAppView: View {
                 MonthlyActualsView()
             case .reports:
                 ReportsView()
+            case .comparison:
+                MonthlyComparisonPage()
             case .none:
                 Text("Please select a page")
                     .font(.title2)
@@ -83,5 +98,15 @@ struct MainAppView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .navigationTitle("My Budget King :: \(selectedPage?.rawValue ?? "")")
+        .onAppear {
+            initializeApp()
+        }
+    }
+
+    private func initializeApp() {
+        // 👉 If you have real data loading, call it here
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            appState.isAppReady = true // ✅ Tell splash screen we are ready
+        }
     }
 }

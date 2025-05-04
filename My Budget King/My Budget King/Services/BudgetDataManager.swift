@@ -5,164 +5,102 @@
 //  Created by Sean Sullivan on 4/22/25.
 //
 
+//
+//  BudgetDataManager.swift
+//  My Budget King
+//
+
 import Foundation
+
+struct MonthlyActualFlatEntry: Identifiable, Codable {
+    var id: UUID
+    var name: String
+    var categoryName: String
+    var budgetedAmount: Double
+    var actualAmount: Double
+}
 
 class BudgetDataManager {
     static let shared = BudgetDataManager()
 
     private init() {}
 
-    // MARK: - Load Categories for Budget Setup
-    func loadCategories(for type: AppBudgetType) -> [BudgetCategory] {
-        let filename = "\(type.rawValue.lowercased())_categories.json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
-
-        do {
-            let data = try Data(contentsOf: url)
-            let decoded = try JSONDecoder().decode([BudgetCategory].self, from: data)
-            print("✅ Loaded \(decoded.count) categories for \(type)")
-            return decoded
-        } catch {
-            print("❌ Failed to load categories: \(error)")
-            return []
-        }
-    }
-
-    // MARK: - Load/Save Monthly Budgets for Budget Setup
-    func loadMonthlyBudgets(for year: Int, type: AppBudgetType) -> [BudgetCategory] {
-        let filename = "\(type.rawValue.lowercased())_budget_\(year).json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
-
-        do {
-            let data = try Data(contentsOf: url)
-            let decoded = try JSONDecoder().decode([BudgetCategory].self, from: data)
-            print("✅ Loaded \(decoded.count) monthly budgets for \(type) - \(year)")
-            return decoded
-        } catch {
-            print("❌ Failed to load monthly budgets: \(error)")
-            return []
-        }
-    }
-
-    func saveMonthlyBudgets(_ categories: [BudgetCategory], for year: Int, type: AppBudgetType) {
-        let filename = "\(type.rawValue.lowercased())_budget_\(year).json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
-
-        do {
-            let data = try JSONEncoder().encode(categories)
-            try data.write(to: url)
-            print("✅ Saved monthly budgets for \(type) - \(year)")
-        } catch {
-            print("❌ Failed to save monthly budgets: \(error)")
-        }
-    }
-
-    // MARK: - Load/Save Monthly Actuals for Monthly Actuals Page
-    // MARK: - Load Monthly Actuals (for MonthlyActualsView and Reports)
-    func loadMonthlyActuals(for year: Int, type: AppBudgetType) -> [MonthlyActualEntry] {
-        let filename = "budget_\(type.rawValue.lowercased())_actuals_\(year).json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
-
-        if FileManager.default.fileExists(atPath: url.path) {
-            do {
-                let data = try Data(contentsOf: url)
-                let decoded = try JSONDecoder().decode([MonthlyActualEntry].self, from: data)
-                print("✅ Loaded \(decoded.count) monthly actual entries for \(type) - \(year)")
-                return decoded
-            } catch {
-                print("❌ Failed to load monthly actual entries: \(error)")
-                return []
-            }
-        } else {
-            print("⚡ No budget actuals found for \(type) \(year).")
-            return []
-        }
-    }
-
-    func saveMonthlyActuals(_ entries: [MonthlyActualEntry], for year: Int, type: AppBudgetType) {
-        let filename = "\(type.rawValue.lowercased())_actuals_\(year).json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
+    // Save actuals to file
+    func saveMonthlyActuals(_ entries: [MonthlyActualFlatEntry], for month: Int, year: Int, type: AppBudgetType) {
+        let filename = String(format: "%02d-%04d-actuals.json", month, year)
+        guard let url = fileURL(for: filename) else { return }
 
         do {
             let data = try JSONEncoder().encode(entries)
             try data.write(to: url)
-            print("✅ Saved monthly actuals for \(type) - \(year)")
+            print("✅ Saved actual entries to \(filename)")
         } catch {
-            print("❌ Failed to save monthly actuals: \(error)")
+            print("❌ Failed to save actual entries: \(error)")
         }
     }
 
-    // MARK: - Load Flat Actuals for Reports
-    // MARK: - Load Flat Actuals for Reports
-    func loadActualsForReports(for year: Int, type: AppBudgetType) -> [ActualEntry] {
-        let filename = "budget_\(type.rawValue.lowercased())_actuals_\(year).json"
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
+    // Load actuals from file
+    func loadActualEntries(for month: Int, year: Int, type: AppBudgetType) -> [ActualEntry] {
+        let filename = String(format: "%02d-%04d-actuals.json", month, year)
+        guard let url = fileURL(for: filename),
+              let data = try? Data(contentsOf: url) else {
+            print("❌ Failed to load actual entries from \(filename)")
+            return []
+        }
 
         do {
-            let data = try Data(contentsOf: url)
-            let decodedMonthly = try JSONDecoder().decode([MonthlyActualEntry].self, from: data)
-
-            // Flatten MonthlyActualEntry → ActualEntry
-            let actuals: [ActualEntry] = decodedMonthly.flatMap { monthly in
-                monthly.items.map { item in
-                    ActualEntry(
-                        id: item.id,
-                        name: item.name,
-                        category: monthly.categoryName,
-                        budgetedAmount: item.budgeted,
-                        actualAmount: item.actual
-                    )
-                }
+            let flat = try JSONDecoder().decode([MonthlyActualFlatEntry].self, from: data)
+            let mapped = flat.map {
+                ActualEntry(id: $0.id, name: $0.name, categoryName: $0.categoryName, budgetedAmount: $0.budgetedAmount, actualAmount: $0.actualAmount)
             }
-
-            print("📊 Loaded \(actuals.count) actuals for reports from \(filename)")
-            return actuals
+            return mapped
         } catch {
-            print("❌ Failed to load report actuals: \(error)")
+            print("❌ Decoding error: \(error)")
             return []
         }
     }
 
-    // MARK: - Grouped Actuals for Reports Page
-    func loadGroupedActualsForReports(for year: Int, type: AppBudgetType) -> ([ReportMonthlyActualEntry], [String: [ReportMonthlyActualEntry]]) {
-        let flat = loadActualsForReports(for: year, type: type)
-
-        // Convert ActualEntry -> ReportMonthlyActualEntry
-        let converted = flat.map { actual in
-            ReportMonthlyActualEntry(
-                name: actual.name,
-                category: actual.category,
-                budgetedAmount: actual.budgetedAmount,
-                actualAmount: actual.actualAmount
-            )
-        }
-
-        let grouped = Dictionary(grouping: converted.filter { $0.category.lowercased() != "income" }) { $0.category }
-        return (converted, grouped)
+    // Helper to get file URL
+    private func fileURL(for filename: String) -> URL? {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(filename)
     }
+    
+    // MARK: - Legacy Support for Budget Setup
 
-    // MARK: - Load Default Categories from JSON in Bundle
     func loadDefaultCategories(for type: AppBudgetType) -> [BudgetCategory] {
-        let filename = type == .personal ? "default_personal_categories" : "default_family_categories"
-
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            print("❌ Failed to locate \(filename).json in bundle")
+        let filename = type == .personal ? "default_personal_categories.json" : "default_family_categories.json"
+        guard let url = Bundle.main.url(forResource: filename, withExtension: nil),
+              let data = try? Data(contentsOf: url),
+              let categories = try? JSONDecoder().decode([BudgetCategory].self, from: data) else {
+            print("❌ Failed to load default categories for \(type)")
             return []
         }
-
-        do {
-            let data = try Data(contentsOf: url)
-            let decoded = try JSONDecoder().decode([BudgetCategory].self, from: data)
-            print("✅ Loaded \(decoded.count) default categories for \(type)")
-            return decoded
-        } catch {
-            print("❌ Failed to decode default categories: \(error)")
-            return []
-        }
+        return categories
     }
 
-    // MARK: - Helper
-    private func getDocumentsDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    func loadMonthlyBudgets(for year: Int, type: AppBudgetType) -> [BudgetCategory] {
+        let filename = "\(year)-\(type.rawValue)-budget.json"
+        let url = documentsDirectory.appendingPathComponent(filename)
+        guard let data = try? Data(contentsOf: url),
+              let categories = try? JSONDecoder().decode([BudgetCategory].self, from: data) else {
+            print("❌ Failed to load monthly budgets from \(filename)")
+            return []
+        }
+        return categories
+    }
+
+    func saveMonthlyBudgets(_ categories: [BudgetCategory], for year: Int, type: AppBudgetType) {
+        let filename = "\(year)-\(type.rawValue)-budget.json"
+        let url = documentsDirectory.appendingPathComponent(filename)
+        do {
+            let data = try JSONEncoder().encode(categories)
+            try data.write(to: url)
+            print("✅ Saved monthly budgets to \(filename)")
+        } catch {
+            print("❌ Failed to save monthly budgets: \(error)")
+        }
+    }
+    private var documentsDirectory: URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     }
 }
