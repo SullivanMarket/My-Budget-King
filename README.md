@@ -17,9 +17,12 @@ Sean Sullivan
 - Import and export budget data (JSON/CSV)
 - Customizable themes (header color, section color, row highlight color)
 - Generate and export financial reports (RTF format)
+- Export Monthly Comparison reports (RTF format)
+- Choose export file name and destination with save panel
+- Validation alerts when attempting to export empty reports
 - View year-over-year comparisons
 - Easy-to-use navigation sidebar
-- Splash screen with app title and logo
+- Splash screen with app title, logo, and fade-in animation
 
 ---
 
@@ -56,7 +59,38 @@ Starting with this version, a custom SwiftUI-based splash screen is used instead
 
 ## Change Log
 
-### [v1.0.0] - 2025-04-28
+### [v1.1.0] - Release Date: 2025-05-04
+
+**Enhancements:**
+
+- **Splash Screen Improvements**:
+  - Added slight delay for smoother transition into main view
+  - Ensured proper fade-in using `withAnimation` and `AppState.shared.isAppReady`
+
+- **Reports Page Enhancements**:
+  - Improved layout for income and expense sections to match styling across the app
+  - Ensured “Income” title appears above section box for visual consistency
+  - Added spacing and formatting tweaks for better readability
+
+- **RTF Export Updates**:
+  - Enhanced Reports and Monthly Comparison RTF outputs with aligned columns and headers
+  - Added section labels (Income, Expenses) and groupings by category for clarity
+  - Fixed alignment bugs and export issues with `CVarArg` and invalid pointer crashes
+  - Added save panel allowing user to choose destination and filename
+
+- **Validation Handling**:
+  - Prevented export if no data is loaded, with user alert shown instead
+
+- **Theme & UI Consistency**:
+  - Matched button styles (e.g., “Export RTF”) across all pages
+  - Standardized dark/light mode compatibility, with fallback primary color for missing accent colors
+
+- **Bug Fixes**:
+  - Removed deprecated `onChange(of:perform:)` syntax
+  - Updated macOS 14+ compatibility warnings for file type filters (`allowedFileTypes` → `allowedContentTypes`)
+  - Added safe decoding fallback in `AppSettings.swift` using `unarchivedObject(ofClass:from:)`
+
+### [v1.0.0] - Release Date: 2025-04-28
 
 **Initial Creation:**
 
