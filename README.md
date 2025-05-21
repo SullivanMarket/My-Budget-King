@@ -57,9 +57,24 @@ Starting with this version, a custom SwiftUI-based splash screen is used instead
 
 ---
 
-### [v1.1.1] - Release Date: 2025-05-21
+### [v1.2.0] - Release Date: 2025-05-21
 
 **Enhancements:**
+
+- **Sidebar Buttons**:
+  - Updated selected page buttons in the sidebar to always appear **blue with white text**, consistent in both Light and Dark Mode.
+  - Ensured unselected buttons have proper contrast:
+    - **Black text** in Light Mode
+    - **Gray text** in Dark Mode
+
+- **Settings Button**:
+  - Restyled the "Settings" button to always display with a **blue background and white text**.
+  - Centered the gear icon and the "Settings" text horizontally within the button for a more polished appearance.
+
+- **⚙️ Settings Popup**:
+  - **Appearance Toggle**:
+    - Re-enabled Light / Dark / System appearance toggle inside the Settings popup.
+    - App now respects the user’s selected theme from this control (or defaults to System if selected).
 
 - **Bug Fixes**:
   - Cleand up UI when system is in Dark/Light Mode so its easier to see

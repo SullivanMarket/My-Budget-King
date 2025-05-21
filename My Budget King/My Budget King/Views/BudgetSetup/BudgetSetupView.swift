@@ -17,6 +17,13 @@ struct BudgetSetupView: View {
     @ObservedObject private var settings = AppSettings.shared
 
     var body: some View {
+        let effectiveColorScheme: ColorScheme? = {
+            switch settings.appearanceRawValue {
+            case "light": return .light
+            case "dark": return .dark
+            default: return nil
+            }
+        }()
         VStack(spacing: 0) {
             // Header
             HStack {
@@ -164,9 +171,6 @@ struct BudgetSetupView: View {
                 .padding()
             }
             .background(settings.sectionBoxColor)
-            .ifLet(settings.colorScheme) { view, scheme in
-                view.colorScheme(scheme)
-            }
         }
         .onAppear {
             loadSaved()
@@ -174,6 +178,7 @@ struct BudgetSetupView: View {
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Saved!"), message: Text("Your budget was saved successfully."), dismissButton: .default(Text("OK")))
         }
+        .preferredColorScheme(effectiveColorScheme)
     }
 
     private func loadDefaults() {

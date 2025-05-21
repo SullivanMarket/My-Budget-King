@@ -24,9 +24,12 @@ class AppSettings: ObservableObject {
     var sectionBoxColor: Color { color(from: sectionBoxColorData) }
     var fieldRowColor: Color { color(from: fieldRowColorData) }
 
-    var colorScheme: ColorScheme? {
-        // Always return light mode now
-        return .light
+    var preferredColorScheme: ColorScheme? {
+        switch appearanceRawValue {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
     }
 
     private func color(from data: Data) -> Color {
