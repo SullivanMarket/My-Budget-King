@@ -83,10 +83,11 @@ struct MonthlyActualsView: View {
                 Label("Save", systemImage: "externaldrive.fill")
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
-                    .background(Color.white)
-                    .foregroundColor(.primary)
+                    .background(colorScheme == .dark ? Color.black : Color.white)
+                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                     .cornerRadius(12)
-            }.buttonStyle(PlainButtonStyle())
+            }
+            .buttonStyle(PlainButtonStyle())
         }.padding().background(settings.headerColor)
     }
 

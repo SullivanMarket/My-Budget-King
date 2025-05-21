@@ -2,7 +2,7 @@
 //  SettingsPopupView.swift
 //  My Budget King
 //
-//  Created by Sean Sullivan
+//  Created by Sean Sullivan on 4/22/25.
 //
 
 import SwiftUI
@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsPopupView: View {
     @ObservedObject private var settings = AppSettings.shared
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: 0) {
@@ -71,8 +72,8 @@ struct SettingsPopupView: View {
                         Label("Cancel", systemImage: "xmark")
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(Color.white)
-                            .foregroundColor(.primary)
+                            .background(colorScheme == .dark ? Color.black : Color.white)
+                            .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                             .cornerRadius(10)
                     }
                     .buttonStyle(.plain)
@@ -83,8 +84,8 @@ struct SettingsPopupView: View {
                         Label("Save", systemImage: "checkmark")
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(Color.white)
-                            .foregroundColor(.primary)
+                            .background(colorScheme == .dark ? Color.black : Color.white)
+                            .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                             .cornerRadius(10)
                     }
                     .buttonStyle(.plain)

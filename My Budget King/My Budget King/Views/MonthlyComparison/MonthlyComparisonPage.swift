@@ -139,11 +139,11 @@ struct MonthlyComparisonPage: View {
                             Label("Load", systemImage: "arrow.clockwise")
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(Color(NSColor.windowBackgroundColor))
+                                .background(colorScheme == .dark ? Color.black : Color.white)
                                 .cornerRadius(10)
                         }
                         .buttonStyle(.plain)
-                        .foregroundColor(.primary)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
 
                         Button(action: {
                             if results.isEmpty {
@@ -176,11 +176,11 @@ struct MonthlyComparisonPage: View {
                             Label("Export RTF", systemImage: "doc.plaintext")
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(Color(NSColor.windowBackgroundColor))
+                                .background(colorScheme == .dark ? Color.black : Color.white)
                                 .cornerRadius(10)
                         }
                         .buttonStyle(.plain)
-                        .foregroundColor(.primary)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         .alert(isPresented: $showEmptyExportAlert) {
                             Alert(
                                 title: Text("Nothing to Export"),

@@ -2,12 +2,13 @@
 //  BudgetSetupView.swift
 //  My Budget King
 //
-//  Created by Sean Sullivan
+//  Created by Sean Sullivan on 4/22/25.
 //
 
 import SwiftUI
 
 struct BudgetSetupView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var selectedType: AppBudgetType = .personal
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
     @State private var categories: [BudgetCategory] = []
@@ -48,8 +49,8 @@ struct BudgetSetupView: View {
                     Label("Load Defaults", systemImage: "arrow.down.circle")
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.white)
-                        .foregroundColor(.primary)
+                        .background(colorScheme == .dark ? Color.black : Color.white)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         .cornerRadius(12)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -60,8 +61,8 @@ struct BudgetSetupView: View {
                     Label("Load Saved", systemImage: "folder")
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.white)
-                        .foregroundColor(.primary)
+                        .background(colorScheme == .dark ? Color.black : Color.white)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         .cornerRadius(12)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -72,8 +73,8 @@ struct BudgetSetupView: View {
                     Label("Save", systemImage: "externaldrive.fill")
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.white)
-                        .foregroundColor(.primary)
+                        .background(colorScheme == .dark ? Color.black : Color.white)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         .cornerRadius(12)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -84,8 +85,8 @@ struct BudgetSetupView: View {
                     Text(isEditing ? "Done" : "Edit")
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.white)
-                        .foregroundColor(.primary)
+                        .background(colorScheme == .dark ? Color.black : Color.white)
+                        .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         .cornerRadius(12)
                 }
                 .buttonStyle(PlainButtonStyle())

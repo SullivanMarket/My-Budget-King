@@ -24,14 +24,14 @@ struct ExportPDFPopupView: View {
 
             VStack {
                 Text("Preview not available in this window.")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white)
                     .padding(.top, 100)
                 Text("Use the Export button below to save a complete PDF report.")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.white)
             }
             .frame(height: 400)
             .frame(maxWidth: .infinity)
-            .background(Color.white)
+            .background(Color.blue)
             .cornerRadius(8)
 
             HStack {
@@ -39,11 +39,22 @@ struct ExportPDFPopupView: View {
                 Button("Cancel", role: .cancel) {
                     dismiss()
                 }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+
                 Button {
                     chooseSaveLocationAndExport()
                 } label: {
                     Label("Save PDF", systemImage: "square.and.arrow.down")
                 }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
                 .keyboardShortcut(.defaultAction)
             }
         }

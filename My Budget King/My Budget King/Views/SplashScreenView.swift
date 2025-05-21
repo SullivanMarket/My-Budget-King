@@ -26,7 +26,7 @@ struct SplashScreenView: View {
                     .scaledToFit()
                     .frame(width: 200, height: 200)
 
-                Text("Version 1.1.0")
+                Text("Version 1.1.1")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)

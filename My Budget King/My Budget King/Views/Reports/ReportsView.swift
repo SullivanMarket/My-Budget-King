@@ -147,9 +147,9 @@ struct ReportsView: View {
                 Label("Export to RTF", systemImage: "doc.richtext")
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
-                    .background(Color.white)
-                    .foregroundColor(.primary)
-                    .cornerRadius(10)
+                    .background(colorScheme == .dark ? Color.black : Color.white)
+                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
+                    .cornerRadius(12)
             }
             .buttonStyle(.plain)
         }

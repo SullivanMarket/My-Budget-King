@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// 🆕 Add this at the top before MainAppView
 enum AppPage: String, CaseIterable, Identifiable {
     case setup = "Budget Setup"
     case actuals = "Monthly Actuals"
@@ -27,10 +26,11 @@ enum AppPage: String, CaseIterable, Identifiable {
 }
 
 struct MainAppView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @State private var selectedPage: AppPage? = .setup
     @State private var showingSettings = false
     @ObservedObject private var settings = AppSettings.shared
-    @ObservedObject private var appState = AppState.shared // 🆕 Needed to mark app as ready
+    @ObservedObject private var appState = AppState.shared
 
     var body: some View {
         NavigationSplitView {
@@ -43,17 +43,21 @@ struct MainAppView: View {
                             Label(page.rawValue, systemImage: page.icon)
                                 .font(.body)
                                 .padding(.vertical, 10)
+                                .foregroundColor(
+                                    selectedPage == page
+                                    ? .white
+                                    : (colorScheme == .light ? .black : .gray)
+                                )
                             Spacer()
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(
-                            selectedPage == page ? settings.headerColor.opacity(0.2) : Color.clear
+                            selectedPage == page ? Color.blue : Color.clear
                         )
                         .cornerRadius(8)
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .foregroundColor(selectedPage == page ? .primary : .secondary)
                     .tag(page)
                 }
 
@@ -62,19 +66,17 @@ struct MainAppView: View {
                 Button(action: {
                     showingSettings = true
                 }) {
-                    HStack {
-                        Spacer()
-                        Label("Settings", systemImage: "gearshape")
-                            .font(.body)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity)
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
+                    Label("Settings", systemImage: "gearshape")
+                        .font(.body)
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 8)
-                .foregroundColor(.primary)
             }
             .frame(minWidth: 200)
         } detail: {
@@ -90,7 +92,7 @@ struct MainAppView: View {
             case .none:
                 Text("Please select a page")
                     .font(.title2)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.white)
             }
         }
         .sheet(isPresented: $showingSettings) {
@@ -104,9 +106,8 @@ struct MainAppView: View {
     }
 
     private func initializeApp() {
-        // 👉 If you have real data loading, call it here
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            appState.isAppReady = true // ✅ Tell splash screen we are ready
+            appState.isAppReady = true
         }
     }
 }

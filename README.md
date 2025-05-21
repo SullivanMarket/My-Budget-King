@@ -57,7 +57,12 @@ Starting with this version, a custom SwiftUI-based splash screen is used instead
 
 ---
 
-## Change Log
+### [v1.1.1] - Release Date: 2025-05-21
+
+**Enhancements:**
+
+- **Bug Fixes**:
+  - Cleand up UI when system is in Dark/Light Mode so its easier to see
 
 ### [v1.1.0] - Release Date: 2025-05-04
 
